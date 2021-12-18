@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask.json import jsonify
 from sqlalchemy import desc
 from sqlalchemy.exc import IntegrityError
 from http import HTTPStatus
@@ -16,25 +17,26 @@ def pres_exists_checker(id):
 @command_handler.route("/prescription", methods=["POST"])
 def create_prescription():
     data = request.json
-    if pres_exists_checker(data["prescription_id"]):
-        return {'message': 'Error: prescription_id is already exists!'}, HTTPStatus.CONFLICT
+    if "prescription_id" in data and pres_exists_checker(data["prescription_id"]):
+        return jsonify({'message': 'Error: prescription_id is already exists!'}), HTTPStatus.CONFLICT
 
     event = EventStore(
         prescription_doctor_id=data["doctor_id"],
-        prescription_id=data["id"],
         prescription_patient_id=data["patient_id"],
         prescription_drug=data["drug"],
         prescription_comment=data["comment"],
-        event_type=Event_Type["Create"]
+        event_type=Event_Type["Create"],
+
 
     )
     try:
         db.session.add(event)
         db.session.commit()
-        bus.emit("create:prescription")
-        return {"message" : "success"}, HTTPStatus.CREATED
+        bus.emit("create:prescription", event)
+        return jsonify({"message" : "success"}), HTTPStatus.CREATED
     except Exception as e:
-        return {"message": str(e)}, HTTPStatus.BAD_REQUEST
+        print(str(e))
+        return jsonify({"message": "bad request"}), HTTPStatus.BAD_REQUEST
 
 
 

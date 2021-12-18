@@ -6,7 +6,7 @@ bus = EventBus()
 
 @bus.on('create:prescription')
 def create_prescription_event_handler(event):
-    prescription = Prescription(id=event.prescription_id,
+    prescription = Prescription(id = event.id,
                                 doctor_id=event.prescription_doctor_id,
                                 patient_id=event.prescription_patient_id,
                                 drug=event.prescription_drug,
