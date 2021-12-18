@@ -1,7 +1,7 @@
 import enum
 
 from flask_sqlalchemy import SQLAlchemy
-
+import datetime
 db = SQLAlchemy()
 
 
@@ -13,6 +13,7 @@ class Event_Type(enum.Enum):
 
 class EventStore(db.Model):
     __tablename__ = "event_store"
+    __bind_key__ = 'event_store'
     id = db.Column(db.Integer, primary_key=True)
     event_type = db.Colunmn(db.Enum(Event_Type))
     prescription_doctor_id = db.Column(db.String(50), nullable=False)
@@ -20,6 +21,7 @@ class EventStore(db.Model):
     prescription_drug = db.Column(db.String(50))
     prescription_comment = db.Column(db.String(100))
     prescription_id = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
 
     def to_dict(self):
         vals = vars(self)
@@ -30,11 +32,13 @@ class EventStore(db.Model):
 
 class Prescription(db.Model):
     __tablename__ = "prescription"
+    __bind_key__ = 'prescriptions'
     id = db.Column(db.Integer, primary_key=True)
     doctor_id = db.Column(db.String(50), nullable=False)
     patient_id = db.Column(db.String(20), nullable=False)
     drug = db.Column(db.String(50))
     comment = db.Column(db.String(100))
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
 
     def to_dict(self):
         vals = vars(self)
