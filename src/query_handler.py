@@ -8,6 +8,11 @@ from http import HTTPStatus
 query_handler = Blueprint('Query Handler', __name__)
 
 
+@query_handler.route("/")
+def init():
+    return "hello"
+
+
 @query_handler.route('/prescription/query', methods=['GET'])
 def read_prescriptions():
     query = Prescription.query

@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask.json import jsonify
-from models import *
+from  models import *
 from command_handler import command_handler
 from query_handler import query_handler
 
@@ -27,4 +27,4 @@ def show_transactions():
 
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=True)
+    app.run(port=5002, debug=True, host="0.0.0.0")
