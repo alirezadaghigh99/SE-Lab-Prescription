@@ -2,6 +2,5 @@
 ## get started
 ```
 cd src
-docker-compose build
-docker-compose up
+python prescription_service.py
 ```
